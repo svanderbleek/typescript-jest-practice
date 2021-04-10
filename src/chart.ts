@@ -1,8 +1,8 @@
-type Resolution = 60 | 300 | 3600
-type Datapoint = number | null
-type Datapoints = Datapoint[]
+export type Resolution = 60 | 300 | 3600
+export type Datapoint = number | null
+export type Datapoints = Datapoint[]
 
-interface Backend {
+export interface Backend {
   /**
    * Issues a call to a remote service to fetch some data. The call is
    * asynchronous - you will be called back via the receiveTemperatureData
@@ -24,7 +24,7 @@ interface Backend {
                          resolution: Resolution): void
 }
 
-interface UI {
+export interface UI {
   /**
    * Renders a chart on screen with the given datapoints, which are simply an
    * array of floating point values. Each time this method is called the chart
@@ -41,7 +41,12 @@ interface UI {
   setChartData(datapoints: Datapoints): void
 }
 
-class Controller {
+export class Controller {
+  ui: UI;
+  backend: Backend;
+  startTime: number;
+  endTime: number;
+
   /**
    * Initializes your object with the starting chart range. You should perform
    * any service calls needed to render the chart as quickly as possible. The
@@ -56,7 +61,13 @@ class Controller {
    * since the epoch.
    */
   constructor(ui: UI, backend: Backend, startTime: number, endTime: number) {
-    // TODO: implement this method
+    this.ui = ui;
+    this.backend = backend;
+    this.startTime = startTime;
+    this.endTime = endTime;
+
+    this.fetch();
+    this.render();
   }
 
   /**
@@ -71,7 +82,9 @@ class Controller {
    * seconds since the epoch.
    */
   setStartTime(startTime: number): void {
-    // TODO: implement this method
+    this.startTime = startTime;
+
+    this.render();
   }
 
   /**
@@ -87,7 +100,9 @@ class Controller {
    *
    */
   setEndTime(endTime: number): void {
-    // TODO: implement this method
+    this.endTime = endTime;
+
+    this.render();
   }
 
   /**
@@ -110,8 +125,16 @@ class Controller {
                          datapoints: Datapoints): void {
     // TODO: implement this method
   }
-}
 
-export function add(x: number, y: number): number {
-  return x + y;
+  resolution(): Resolution { return 60; }
+
+  fetch(): void {
+    this.backend.requestTemperatureData(this.startTime, this.endTime, this.resolution());
+  }
+
+  datapoints(): Datapoints { return []; }
+
+  render(): void {
+    this.ui.setChartData(this.datapoints());
+  }
 }
