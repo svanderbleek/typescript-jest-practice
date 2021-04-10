@@ -24,3 +24,10 @@ npm run build
 ```
 npm test
 ```
+
+## repl
+
+```
+ts-node --files
+> import { add } from "./src/chart"
+```
