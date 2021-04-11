@@ -42,10 +42,13 @@ export interface UI {
 }
 
 export class Controller {
-  ui: UI;
-  backend: Backend;
-  startTime: number;
-  endTime: number;
+  private ui: UI;
+  private backend: Backend;
+  private startTime: number;
+  private endTime: number;
+
+  static readonly range_one_min: number = 60 * 60 * 2;
+  static readonly range_five_min: number = 60 * 60 * 24 * 7;
 
   /**
    * Initializes your object with the starting chart range. You should perform
@@ -126,13 +129,25 @@ export class Controller {
     // TODO: implement this method
   }
 
-  resolution(): Resolution { return 60; }
+  resolution(): Resolution { 
+    const range = this.endTime - this.startTime;
+
+    if (range <= Controller.range_one_min) {
+      return 60;
+    } else if (range <= Controller.range_five_min) {
+      return 300;
+    } else {
+      return 3600;
+    }
+  }
 
   fetch(): void {
     this.backend.requestTemperatureData(this.startTime, this.endTime, this.resolution());
   }
 
-  datapoints(): Datapoints { return []; }
+  datapoints(): Datapoints { 
+    return []; 
+  }
 
   render(): void {
     this.ui.setChartData(this.datapoints());

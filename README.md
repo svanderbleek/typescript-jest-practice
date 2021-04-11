@@ -13,6 +13,12 @@ npx tsc --init
 npx ts-jest config:init
 ```
 
+allowing for subsequent setup by
+
+```
+npm install
+```
+
 ## build
 
 ```
